@@ -1,0 +1,28 @@
+.event-cover-image {
+  .cover-image-container {
+    width: 100%;
+    max-width: 300px;
+
+    .preview-image {
+      max-height: 200px;
+    }
+  }
+}
+
+.event-page {
+  .content {
+    padding-top: 0px !important;
+  }
+}
+
+.column-text-overflow {
+  height: 75px;
+  line-height: 30px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}

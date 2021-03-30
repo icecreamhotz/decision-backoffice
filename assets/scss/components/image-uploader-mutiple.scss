@@ -1,0 +1,30 @@
+.img-uploader-multiple-container {
+  width: 100%;
+  min-height: 200px;
+  border-radius: 5px;
+  border: 1px solid #BFBFBF;
+  background: white;
+  padding: 20px 30px;
+}
+
+.img-upload-text {
+  color: #4AC0BB;
+  text-decoration-line: underline;
+  cursor: pointer;
+}
+
+.preview-multiple-upload-image {
+  img {
+    width: 100%;
+    height: auto;
+  }
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+}
+
+.remove-image-button {
+  position: absolute !important;
+  top: 0;
+  right: 0;
+}
