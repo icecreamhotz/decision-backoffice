@@ -1,0 +1,8 @@
+const DEFAULT_LAT_LNG = {
+  lat: 13.756414079055094,
+  lng: 100.50180978027177
+}
+
+export {
+  DEFAULT_LAT_LNG
+}

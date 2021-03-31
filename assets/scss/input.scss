@@ -1,0 +1,17 @@
+.v-label {
+  .required:after {
+    content: "*";
+    color: $danger;
+  }
+  .placeholder {
+    font-size: 16px !important;
+    font-weight: 300;
+    letter-spacing: 0.03125em !important;
+    line-height: 21px;
+    font-family: "Kanit" !important;
+  }
+}
+
+.v-messages__message {
+  line-height: inherit !important;
+}

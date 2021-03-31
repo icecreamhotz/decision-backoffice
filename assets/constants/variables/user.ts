@@ -1,0 +1,8 @@
+const ROLE_USER = {
+  MANAGER: 'MANAGER',
+  EMPLOYEE: 'EMPLOYEE'
+}
+
+export {
+  ROLE_USER
+}

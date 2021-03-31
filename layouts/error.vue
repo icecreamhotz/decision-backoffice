@@ -1,25 +1,17 @@
 <template>
   <v-app dark>
-    <PageLoading />
-    <Message />
     <h1 v-if="error.statusCode === 404">
-      {{ pageNotFound }}
+      404
     </h1>
     <h1 v-else>
-      {{ otherError }}
+      Error
     </h1>
   </v-app>
 </template>
 
 <script>
-import { Message } from '~/components/alert'
-import { PageLoading } from '~/components/loading'
-
 export default {
   layout: 'empty',
-  components: {
-    PageLoading, Message
-  },
   props: {
     error: {
       type: Object,

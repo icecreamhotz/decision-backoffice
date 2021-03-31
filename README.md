@@ -1,12 +1,20 @@
-# backoffice v2
+# coconutt-bof
 
-# Development Installation (THZ Hosting)
+## Build Setup
 
-1. Go to manage GIT and Pull Updates
-2. Go to manage Node.js
-    - 2.1 Click button `Enable Node.js`
-    - 2.2 Change `Application Root` to root folder
-    - 2.3 Click button `NPM install`
-    - 2.4 Click button `Run script`, fill input `generate` and click `Run` button
-    - 2.5 Click button `Restart App`
-    - 2.6 Click button `Disable Node.js`
+```bash
+# install dependencies
+$ npm install
+
+# serve with hot reload at localhost:3000
+$ npm run dev
+
+# build for production and launch server
+$ npm run build
+$ npm run start
+
+# generate static project
+$ npm run generate
+```
+
+For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).

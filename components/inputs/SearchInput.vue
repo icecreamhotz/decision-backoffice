@@ -1,63 +1,33 @@
 <template>
   <v-text-field
-    v-model="innerValue"
-    :label="lable"
-    :data-cy="dataCy"
-    class="search-input"
+    :value="value"
+    append-icon="mdi-magnify"
     hide-details
-    @keyup.enter="search"
+    single-line
+    @input="$emit('input', $event)"
+    @keyup.enter="$emit('enter')"
   >
-    <v-icon
-      slot="append"
-      @click="search"
-    >
-      mdi-magnify
-    </v-icon>
+    <template #label>
+      <div class="placeholder">
+        {{ label }}
+      </div>
+    </template>
   </v-text-field>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from '@nuxtjs/composition-api'
+
+export default defineComponent({
   props: {
     value: {
       type: String,
       default: ''
     },
-    reset: {
-      type: Boolean,
-      default: false
-    },
-    lable: {
-      type: String,
-      default: 'ค้นหา'
-    },
-    dataCy: {
+    label: {
       type: String,
       default: ''
     }
-  },
-  data () {
-    return {
-      innerValue: ''
-    }
-  },
-  watch: {
-    value (value) {
-      this.innerValue = value
-    },
-    reset (value) {
-      if (value) {
-        this.innerValue = ''
-      }
-    },
-    innerValue (value) {
-      this.$emit('input', value)
-    }
-  },
-  methods: {
-    search () {
-      this.$emit('search', this.innerValue)
-    }
   }
-}
+})
 </script>

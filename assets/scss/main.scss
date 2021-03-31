@@ -1,38 +1,4 @@
-// Import Sarabun font from assets
-@font-face {
-  font-family: 'Prompt-Bold';
-  src: url("../../static/fonts/prompt/Prompt-Bold.ttf");
-}
-@font-face {
-  font-family: 'Prompt-Light';
-  src: url("../../static/fonts/prompt/Prompt-Light.ttf");
-}
-@font-face {
-  font-family: 'Prompt-Medium';
-  src: url("../../static/fonts/prompt/Prompt-Medium.ttf");
-}
-@font-face {
-  font-family: 'Prompt-Regular';
-  src: url("../../static/fonts/prompt/Prompt-Regular.ttf");
-}
-@font-face {
-  font-family: 'Prompt-SemiBold';
-  src: url("../../static/fonts/prompt/Prompt-SemiBold.ttf");
-}
-
 @import "variables.scss";
-
-// Import style scss
-@import "custom.scss";
-@import "./style/text.scss";
-@import "./style/media.scss";
-@import "./style/preview.scss";
-@import "./style/page-loading.scss";
-@import "./style/card-content.scss";
-@import "./style/vue-croppie.scss";
-
-// Import page scss
-@import "./pages/event.scss";
-
-//Import component scss
-@import "./components/image-uploader-mutiple.scss";
+@import "global.scss";
+@import "input.scss";
+@import "modal.scss";

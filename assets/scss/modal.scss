@@ -1,0 +1,30 @@
+.common-modal__dialog {
+  border-radius: 5px;
+  box-shadow: none !important;
+}
+.common-modal__container {
+  .common-modal__header {
+    padding: 16px 24px;
+  }
+  .common-modal__content {
+    padding: 24px;
+  }
+  .common-modal__footer {
+    display: flex;
+    justify-content: center;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    .common-btn {
+      margin-right: 16px;
+    }
+  }
+}
+@media screen and (max-width: 380px) {
+  .common-modal__container {
+    .common-modal__footer {
+      flex-direction: column;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+  }
+}

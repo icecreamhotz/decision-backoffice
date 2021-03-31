@@ -2,44 +2,26 @@
   <ValidationProvider v-slot="{ errors }" :name="$attrs.name" :rules="rules">
     <v-switch
       v-model="innerValue"
-      inset
-      style="width: max-content;"
+      class="align-center toggle-container"
+      :class="{'active-toggle': value}"
       v-bind="$attrs"
-      :disabled="isDisabled"
-      :error-messages="errors"
-      :label="labelPosition === 'right' ? label : null"
-      :class="{'required-sign-before' : isRequire, ...switchClass, 'inactive-toggle' : innerValue == false && !isDisabled, 'disabled-toggle' : isDisabled }"
-      @change="$emit('change', $event)"
+      :error="errors.length > 0"
+      :error-messages="errors.length > 0 ? errors[0] : ''"
+      hide-details="auto"
+      @change="$emit('input', $event)"
     >
-      <template v-if="labelPosition === 'left'" #prepend>
-        <div class="toggle-label-wrapper">
-          <label :class="{'required-sign-before' : isRequire}" :for="$attrs.name">
-            <span :class="{'text-dark-grey' : !innerValue, 'text-dark': innerValue}">{{ label }}</span>
-            <v-tooltip v-if="helpText" bottom>
-              <template v-slot:activator="{ on }">
-                <v-icon color="primary" style="cursor: pointer" v-on="on">mdi-help-circle-outline</v-icon>
-              </template>
-              <span>{{ helpText }}</span>
-            </v-tooltip>
-          </label>
-        </div>
+      <template v-if="label" #prepend>
+        <span class="text-h5 text-gray-color">{{ label }}</span>
       </template>
     </v-switch>
   </ValidationProvider>
 </template>
 
-<script>
-import { ValidationProvider } from 'vee-validate'
+<script lang="ts">
+import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
 
-export default {
-  components: {
-    ValidationProvider
-  },
+export default defineComponent({
   props: {
-    switchClass: {
-      type: Object,
-      default: () => ({})
-    },
     rules: {
       type: String,
       default: ''
@@ -48,24 +30,8 @@ export default {
       type: String,
       default: ''
     },
-    labelPosition: {
-      type: String,
-      default: 'right'
-    },
     value: {
       type: null,
-      default: false
-    },
-    isRequire: {
-      type: Boolean,
-      default: false
-    },
-    helpText: {
-      type: String,
-      default: ''
-    },
-    isFullArea: {
-      type: Boolean,
       default: false
     },
     isDisabled: {
@@ -73,16 +39,33 @@ export default {
       default: false
     }
   },
-  data () {
+  setup (props) {
+    const innerValue = ref(props.value)
+
+    watch(() => props.value, (value) => {
+      innerValue.value = value
+    })
+
     return {
-      innerValue: this.value
-    }
-  },
-  watch: {
-    value (newVal) {
-      this.innerValue = newVal
+      innerValue
     }
   }
-
-}
+})
 </script>
+
+<style lang="scss">
+.active-toggle {
+  .v-input--switch__thumb {
+    color: $white !important;
+  }
+  .v-input--switch__track {
+    background-color: $primary !important;
+    opacity: 1 !important;
+  }
+}
+.toggle-container {
+  .v-input__control {
+    width: auto !important;
+  }
+}
+</style>
