@@ -8,8 +8,15 @@
     :options.sync="optionsObj"
     :server-items-length="total"
   >
-    <template #item.index="{ item }" class="text-primary">
-      {{ showNumberPage(item, options) }}
+    <template #item.file="{item}">
+      <v-btn
+        :href="item.file"
+        target="_blank"
+        icon
+        color="primary"
+      >
+        <v-icon>mdi-file</v-icon>
+      </v-btn>
     </template>
     <template #item.active="{ item }">
       <ToggleWithValidate

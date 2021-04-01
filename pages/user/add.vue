@@ -11,9 +11,9 @@
               <v-col cols="12" md="6">
                 <InputWithValidate
                   v-model="username"
-                  disabled
                   label="ชื่อผู้ใช้ระบบ"
                   name="ชื่อผู้ใช้ระบบ"
+                  rules="required"
                 />
               </v-col>
               <v-col cols="12" md="6">
@@ -22,6 +22,7 @@
                   label="รหัสผ่าน"
                   name="รหัสผ่าน"
                   type="password"
+                  rules="required"
                 />
               </v-col>
               <v-col cols="12" md="6">
@@ -57,11 +58,18 @@
                 />
               </v-col>
               <v-col cols="12">
-                <InputWithValidate
+                <SelectWithValidate
                   v-model="role"
-                  disabled
-                  label="สิทธิ"
-                  name="สิทธิ"
+                  name="สิทธิการใช้งาน"
+                  label="สิทธิการใช้งาน"
+                  placeholder="สิทธิการใช้งาน"
+                  outlined
+                  dense
+                  flat
+                  text-field="text"
+                  value-field="value"
+                  :items="roles"
+                  rules="required"
                 />
               </v-col>
             </v-row>
@@ -81,11 +89,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, ref, useFetch } from '@nuxtjs/composition-api'
+import { defineComponent, useContext, ref, useRouter } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   setup () {
     const context = useContext()
+    const router = useRouter()
     const username = ref<string>('')
     const password = ref<string>('')
     const firstname = ref<string>('')
@@ -93,37 +102,41 @@ export default defineComponent({
     const email = ref<string>('')
     const tel = ref<string>('')
     const role = ref<string>('')
+    const roles = ref<any>([{
+      text: 'ผู้ดูแลระบบ',
+      value: 'ADMIN'
+    }, {
+      text: 'เจ้าหน้าที่ห้องทะเบียน',
+      value: 'STAFF'
+    }])
     const isSubmit = ref<boolean>(false)
-
-    useFetch(async () => {
-      try {
-        const user = await context.$axios.get('/auth/payload')
-        const data = user.data.data
-        username.value = data.username
-        firstname.value = data.firstname
-        lastname.value = data.lastname
-        email.value = data.email
-        tel.value = data.tel
-        role.value = data.role === 'ADMIN' ? 'ผู้ดูแลระบบ' : 'เจ้าหน้าที่ห้องทะเบียน'
-      } catch (err) {
-        context.store.commit('alert/show', { type: 'error', message: err })
-      }
-    })
 
     const submit = (validate: () => Promise<any>) => {
       validate().then(async (success: boolean) => {
         if (success) {
           try {
-            await context.$axios.put('/auth/me', {
+            isSubmit.value = true
+            await context.$axios.post('/users', {
+              username: username.value,
               password: password.value,
               email: email.value,
               firstname: firstname.value,
               lastname: lastname.value,
-              tel: tel.value
+              tel: tel.value,
+              role: role.value
             })
+            isSubmit.value = true
             context.store.commit('alert/show', { type: 'success', message: 'ทำรายการสำเร็จ.' })
+            router.push('/user')
           } catch (err) {
-            context.store.commit('alert/show', { type: 'error', message: err })
+            isSubmit.value = false
+            if (err.response!.status === 400) {
+              if (err.response.data.message.ERROR_TYPE === 'UNIQUE_USERNAME') {
+                context.store.commit('alert/show', { type: 'error', message: 'กรุณาเปลี่ยนชื่อผู้ใช้ระบบเนื่องจากมีข้อมูลซ้ำ.' })
+              }
+            } else {
+              context.store.commit('alert/show', { type: 'error', message: err })
+            }
           }
         }
       })
@@ -137,6 +150,7 @@ export default defineComponent({
       email,
       tel,
       role,
+      roles,
       submit,
       isSubmit
     }
