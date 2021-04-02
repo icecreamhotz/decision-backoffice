@@ -53,8 +53,8 @@ export default defineComponent({
 
     useFetch(async () => {
       try {
-        const user = await context.$axios.get(`/document-problems/${route.value.params.id}`)
-        const data = user.data.data
+        const documentProblem = await context.$axios.get(`/document-problems/${route.value.params.id}`)
+        const data = documentProblem.data.data
         name.value = data.name
         fileName.value = data.file
       } catch (err) {
