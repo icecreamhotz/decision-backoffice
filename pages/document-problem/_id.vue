@@ -5,7 +5,7 @@
   >
     <form @submit.prevent="submit(validate)">
       <CardContainer>
-        <CardContent title="แก้ไขข้อมูลส่วนตัว">
+        <CardContent title="แก้ไขข้อมูลเอกสารแก้ไขปัญหา">
           <template slot="content">
             <v-row>
               <v-col cols="12">

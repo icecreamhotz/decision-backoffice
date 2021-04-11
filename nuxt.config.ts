@@ -45,7 +45,8 @@ export default {
     '~/plugins/axios',
     '~/plugins/vue-google-map',
     '~/plugins/vue-timepicker',
-    '~/plugins/vue-croppie'
+    '~/plugins/vue-croppie',
+    '~/plugins/vue-multiselect'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

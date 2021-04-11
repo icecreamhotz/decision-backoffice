@@ -5,7 +5,7 @@
   >
     <form @submit.prevent="submit(validate)">
       <CardContainer>
-        <CardContent title="เพิ่มข้อมูลเอกสารแก้ไขปัญหา">
+        <CardContent title="แก้ไขข้อมูลส่วนตัว">
           <template slot="content">
             <v-row>
               <v-col cols="12">
@@ -19,9 +19,7 @@
               <v-col cols="12">
                 <FileInputWithValidate
                   v-model="file"
-                  label="อัพโหลดไฟล์"
-                  name="อัพโหลดไฟล์"
-                  rules="required"
+                  :placeholder="fileName"
                 />
               </v-col>
             </v-row>
@@ -41,15 +39,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, ref, useRouter } from '@nuxtjs/composition-api'
+import { defineComponent, useContext, useFetch, ref, useRouter, useRoute } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   setup () {
     const context = useContext()
     const router = useRouter()
+    const route = useRoute()
     const name = ref<string>('')
     const file = ref<any>(null)
+    const fileName = ref<string>('')
     const isSubmit = ref<boolean>(false)
+
+    useFetch(async () => {
+      try {
+        const documentProblem = await context.$axios.get(`/document-problems/${route.value.params.id}`)
+        const data = documentProblem.data.data
+        name.value = data.name
+        fileName.value = data.file
+      } catch (err) {
+        context.store.commit('alert/show', { type: 'error', message: err })
+      }
+    })
 
     const submit = (validate: () => Promise<any>) => {
       validate().then(async (success: boolean) => {
@@ -58,8 +69,10 @@ export default defineComponent({
             isSubmit.value = true
             const formData = new FormData()
             formData.append('name', name.value)
-            formData.append('file', file.value)
-            await context.$axios.post('/document-problems', formData)
+            if (file.value) {
+              formData.append('file', file.value)
+            }
+            await context.$axios.put(`/document-problems/${route.value.params.id}`, formData)
             context.store.commit('alert/show', { type: 'success', message: 'ทำรายการสำเร็จ.' })
             isSubmit.value = true
             router.push('/document-problem')
@@ -75,6 +88,7 @@ export default defineComponent({
       name,
       file,
       submit,
+      fileName,
       isSubmit
     }
   }
