@@ -19,7 +19,7 @@
                 :options.sync="options"
                 :total="total"
                 @edit="id => $router.push(`/problem/${id}`)"
-                @delete="deleteDocumentProblem"
+                @delete="deleteProblem"
               />
             </v-col>
           </v-row>
@@ -28,9 +28,9 @@
     </CardContainer>
     <ConfirmModalComponent
       v-model="deleteModalValue"
-      title="ยืนยันการลบข้อมูลเอกสารในการใช้สำหรับแก้ไขปัญหา"
-      text="คุณต้องการที่จะลบข้อมูลเอกสารในการใช้สำหรับแก้ไขปัญหาใช่หรือไม่"
-      @success="onClickDeleteDocumentProblem"
+      title="ยืนยันการลบข้อมูลปัญหาที่พบบ่อย"
+      text="คุณต้องการที่จะลบข้อมูลปัญหาที่พบบ่อยใช่หรือไม่"
+      @success="onClickdeleteProblem"
     />
   </div>
 </template>
@@ -101,9 +101,9 @@ export default defineComponent({
       }
     }
 
-    const onClickDeleteDocumentProblem = async () => {
+    const onClickdeleteProblem = async () => {
       try {
-        await context.$axios.delete(`/document-problems/${deleteID.value}`)
+        await context.$axios.delete(`/problems/${deleteID.value}`)
         deleteModalValue.value = false
         deleteID.value = 0
         fetchProblems()
@@ -113,7 +113,7 @@ export default defineComponent({
       }
     }
 
-    const deleteDocumentProblem = (id: number) => {
+    const deleteProblem = (id: number) => {
       deleteModalValue.value = true
       deleteID.value = id
     }
@@ -128,8 +128,8 @@ export default defineComponent({
       page,
       data,
       deleteModalValue,
-      deleteDocumentProblem,
-      onClickDeleteDocumentProblem
+      deleteProblem,
+      onClickdeleteProblem
     }
   }
 })

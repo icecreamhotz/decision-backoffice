@@ -5,21 +5,49 @@
   >
     <form @submit.prevent="submit(validate)">
       <CardContainer>
-        <CardContent title="แก้ไขข้อมูลส่วนตัว">
+        <CardContent title="แก้ไขข้อมูลปัญหาที่พบบ่อย">
           <template slot="content">
             <v-row>
               <v-col cols="12">
                 <InputWithValidate
                   v-model="name"
-                  label="ชื่อเอกสาร"
-                  name="ชื่อเอกสาร"
+                  label="หัวข้อปัญหา"
+                  name="หัวข้อปัญหา"
                   rules="required"
                 />
               </v-col>
               <v-col cols="12">
-                <FileInputWithValidate
-                  v-model="file"
-                  :placeholder="fileName"
+                <TextareaWithValidate
+                  v-model="description"
+                  name="วิธีีการแก้ปัญหา"
+                  label="วิธีการแก้ปัญหา"
+                  rules="required"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <label>ในกรณีที่ตอบใช่</label>
+                <MultiSelectWithValidate
+                  v-model="correct"
+                  :options="questionLists"
+                  searchable
+                  name="คำถามถัดไปในกรณีตอบใช่"
+                  placeholder="คำถามถัดไปในกรณีตอบใช่"
+                  close-on-select
+                  label="name"
+                  track-by="id"
+                />
+              </v-col>
+              <v-col cols="12" md="6">
+                <label>ในกรณีที่ตอบไม่ใช่</label>
+                <MultiSelectWithValidate
+                  v-model="wrong"
+                  :options="questionLists"
+                  searchable
+                  name="คำถามถัดไปในกรณีตอบไม่ใช่"
+                  placeholder="คำถามถัดไปในกรณีตอบไม่ใช่"
+                  close-on-select
+                  label="name"
+                  track-by="id"
                 />
               </v-col>
             </v-row>
@@ -39,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useContext, useFetch, ref, useRouter, useRoute } from '@nuxtjs/composition-api'
+import { defineComponent, useContext, ref, useRouter, useFetch, useRoute } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   setup () {
@@ -47,17 +75,34 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
     const name = ref<string>('')
-    const file = ref<any>(null)
-    const fileName = ref<string>('')
+    const description = ref<string>('')
+    const questionLists = ref<any>([])
+    const correct = ref<any>(null)
+    const wrong = ref<any>(null)
     const isSubmit = ref<boolean>(false)
 
     useFetch(async () => {
       try {
-        const documentProblem = await context.$axios.get(`/document-problems/${route.value.params.id}`)
-        const data = documentProblem.data.data
-        name.value = data.name
-        fileName.value = data.file
+        const [
+          problems,
+          problem
+        ] = await Promise.all([
+          context.$axios.get('/problems?perPage=999'),
+          context.$axios.get(`/problems/${route.value.params.id}`)
+        ])
+        questionLists.value = problems.data.data.data.map((v: any) => ({
+          id: v.id,
+          name: v.title
+        }))
+          .filter((v: any) => +v.id !== +route.value.params.id)
+        name.value = problem.data.data.title
+        description.value = problem.data.data.description
+        const trueValue = problem.data.data.childs.find((v: any) => v.is_true)
+        const falseValue = problem.data.data.childs.find((v: any) => v.is_false)
+        correct.value = trueValue ? questionLists.value.find((v:any) => v.id === trueValue.child_problem_id) : null
+        wrong.value = falseValue ? questionLists.value.find((v:any) => v.id === falseValue.child_problem_id) : null
       } catch (err) {
+        isSubmit.value = false
         context.store.commit('alert/show', { type: 'error', message: err })
       }
     })
@@ -67,15 +112,15 @@ export default defineComponent({
         if (success) {
           try {
             isSubmit.value = true
-            const formData = new FormData()
-            formData.append('name', name.value)
-            if (file.value) {
-              formData.append('file', file.value)
-            }
-            await context.$axios.put(`/document-problems/${route.value.params.id}`, formData)
+            await context.$axios.put(`/problems/${route.value.params.id}`, {
+              title: name.value,
+              description: description.value,
+              child_true: correct.value ? [correct.value.id] : [],
+              child_false: wrong.value ? [wrong.value.id] : []
+            })
             context.store.commit('alert/show', { type: 'success', message: 'ทำรายการสำเร็จ.' })
             isSubmit.value = true
-            router.push('/document-problem')
+            router.push('/problem')
           } catch (err) {
             isSubmit.value = false
             context.store.commit('alert/show', { type: 'error', message: err })
@@ -86,9 +131,11 @@ export default defineComponent({
 
     return {
       name,
-      file,
+      description,
+      questionLists,
+      correct,
+      wrong,
       submit,
-      fileName,
       isSubmit
     }
   }

@@ -7,6 +7,9 @@
       :error="errors.length > 0"
       :error-messages="errors.length > 0 ? errors[0] : ''"
       v-bind="$attrs"
+      outlined
+      dense
+      flat
       hide-details="auto"
       @input="$emit('input', $event)"
     >
