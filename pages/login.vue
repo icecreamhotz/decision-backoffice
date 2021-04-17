@@ -11,7 +11,6 @@
           <v-col cols="12">
             <InputWithValidate
               v-model="username"
-              ห
               label="ชื่อผู้ใช้"
               name="ชื่อผู้ใช้"
               rules="required"
