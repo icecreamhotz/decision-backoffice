@@ -9,10 +9,30 @@
           <template slot="content">
             <v-row>
               <v-col cols="12">
+                <MultiSelectWithValidate
+                  v-model="category"
+                  :options="categoryLists"
+                  searchable
+                  name="หมวดหมู่"
+                  placeholder="หมวดหมู่"
+                  close-on-select
+                  label="name"
+                  track-by="id"
+                />
+              </v-col>
+              <v-col cols="12">
                 <InputWithValidate
                   v-model="name"
                   label="หัวข้อปัญหา"
                   name="หัวข้อปัญหา"
+                  rules="required"
+                />
+              </v-col>
+              <v-col cols="12">
+                <TextareaWithValidate
+                  v-model="detail"
+                  name="รายละเอียด"
+                  label="รายละเอียด"
                   rules="required"
                 />
               </v-col>
@@ -24,7 +44,7 @@
                   rules="required"
                 />
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col cols="12">
                 <label>ในกรณีที่ตอบใช่</label>
                 <MultiSelectWithValidate
                   v-model="correct"
@@ -37,7 +57,7 @@
                   track-by="id"
                 />
               </v-col>
-              <v-col cols="12" md="6">
+              <!-- <v-col cols="12" md="6">
                 <label>ในกรณีที่ตอบไม่ใช่</label>
                 <MultiSelectWithValidate
                   v-model="wrong"
@@ -49,7 +69,7 @@
                   label="name"
                   track-by="id"
                 />
-              </v-col>
+              </v-col> -->
             </v-row>
           </template>
           <template slot="submit">
@@ -74,7 +94,10 @@ export default defineComponent({
     const context = useContext()
     const router = useRouter()
     const name = ref<string>('')
+    const detail = ref<string>('')
     const description = ref<string>('')
+    const category = ref<any>([])
+    const categoryLists = ref<any>([])
     const questionLists = ref<any>([])
     const correct = ref<any>(null)
     const wrong = ref<any>(null)
@@ -82,10 +105,20 @@ export default defineComponent({
 
     useFetch(async () => {
       try {
-        const problems = await context.$axios.get('/problems?perPage=999')
+        const [
+          problems,
+          categories
+        ] = await Promise.all([
+          context.$axios.get('/problems?perPage=999'),
+          context.$axios.get('/problem-categories?perPage=999')
+        ])
         questionLists.value = problems.data.data.data.map((v: any) => ({
           id: v.id,
           name: v.title
+        }))
+        categoryLists.value = categories.data.data.data.map((v: any) => ({
+          id: v.id,
+          name: v.name
         }))
       } catch (err) {
         isSubmit.value = false
@@ -99,6 +132,8 @@ export default defineComponent({
           try {
             isSubmit.value = true
             await context.$axios.post('/problems', {
+              problem_category_id: category.value.id,
+              detail: detail.value,
               title: name.value,
               description: description.value,
               child_true: correct.value ? [correct.value.id] : [],
@@ -118,6 +153,9 @@ export default defineComponent({
     return {
       name,
       description,
+      detail,
+      category,
+      categoryLists,
       questionLists,
       correct,
       wrong,

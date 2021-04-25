@@ -40,7 +40,7 @@ export default defineComponent({
         text: 'หัวข้อปัญหา', value: 'name', sortable: false, width: '500px', align: 'left'
       },
       {
-        text: 'จัดการ', value: 'manager', sortable: false, width: '20px', align: 'left'
+        text: 'จัดการ', value: 'delete', sortable: false, width: '20px', align: 'left'
       }
     ])
     const loadingTable = ref<boolean>(true)

@@ -9,10 +9,30 @@
           <template slot="content">
             <v-row>
               <v-col cols="12">
+                <MultiSelectWithValidate
+                  v-model="category"
+                  :options="categoryLists"
+                  searchable
+                  name="หมวดหมู่"
+                  placeholder="หมวดหมู่"
+                  close-on-select
+                  label="name"
+                  track-by="id"
+                />
+              </v-col>
+              <v-col cols="12">
                 <InputWithValidate
                   v-model="name"
                   label="หัวข้อปัญหา"
                   name="หัวข้อปัญหา"
+                  rules="required"
+                />
+              </v-col>
+              <v-col cols="12">
+                <TextareaWithValidate
+                  v-model="detail"
+                  name="รายละเอียด"
+                  label="รายละเอียด"
                   rules="required"
                 />
               </v-col>
@@ -24,7 +44,7 @@
                   rules="required"
                 />
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col cols="12">
                 <label>ในกรณีที่ตอบใช่</label>
                 <MultiSelectWithValidate
                   v-model="correct"
@@ -37,7 +57,7 @@
                   track-by="id"
                 />
               </v-col>
-              <v-col cols="12" md="6">
+              <!-- <v-col cols="12" md="6">
                 <label>ในกรณีที่ตอบไม่ใช่</label>
                 <MultiSelectWithValidate
                   v-model="wrong"
@@ -49,7 +69,7 @@
                   label="name"
                   track-by="id"
                 />
-              </v-col>
+              </v-col> -->
             </v-row>
           </template>
           <template slot="submit">
@@ -75,7 +95,10 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
     const name = ref<string>('')
+    const detail = ref<string>('')
     const description = ref<string>('')
+    const category = ref<any>([])
+    const categoryLists = ref<any>([])
     const questionLists = ref<any>([])
     const correct = ref<any>(null)
     const wrong = ref<any>(null)
@@ -85,18 +108,26 @@ export default defineComponent({
       try {
         const [
           problems,
-          problem
+          problem,
+          categories
         ] = await Promise.all([
           context.$axios.get('/problems?perPage=999'),
-          context.$axios.get(`/problems/${route.value.params.id}`)
+          context.$axios.get(`/problems/${route.value.params.id}`),
+          context.$axios.get('/problem-categories?perPage=999')
         ])
         questionLists.value = problems.data.data.data.map((v: any) => ({
           id: v.id,
           name: v.title
         }))
           .filter((v: any) => +v.id !== +route.value.params.id)
+        categoryLists.value = categories.data.data.data.map((v: any) => ({
+          id: v.id,
+          name: v.name
+        }))
         name.value = problem.data.data.title
         description.value = problem.data.data.description
+        detail.value = problem.data.data.detail
+        category.value = categoryLists.value.find((v: any) => v.id === problem.data.data.problem_category_id)
         const trueValue = problem.data.data.childs.find((v: any) => v.is_true)
         const falseValue = problem.data.data.childs.find((v: any) => v.is_false)
         correct.value = trueValue ? questionLists.value.find((v:any) => v.id === trueValue.child_problem_id) : null
@@ -115,6 +146,8 @@ export default defineComponent({
             await context.$axios.put(`/problems/${route.value.params.id}`, {
               title: name.value,
               description: description.value,
+              detail: detail.value,
+              problem_category_id: category.value.id,
               child_true: correct.value ? [correct.value.id] : [],
               child_false: wrong.value ? [wrong.value.id] : []
             })
@@ -132,6 +165,9 @@ export default defineComponent({
     return {
       name,
       description,
+      detail,
+      category,
+      categoryLists,
       questionLists,
       correct,
       wrong,

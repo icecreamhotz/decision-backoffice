@@ -51,6 +51,9 @@ export default defineComponent({
         text: 'วิธีการแก้ปัญหา', value: 'description', sortable: false, width: '250px', align: 'left'
       },
       {
+        text: 'หมวดหมู่', value: 'category', sortable: false, width: '100px', align: 'left'
+      },
+      {
         text: 'จำนวนวิว', value: 'view', sortable: false, width: '50px', align: 'center'
       },
       {
@@ -95,7 +98,8 @@ export default defineComponent({
           name: problem.title,
           description: problem.description,
           active: problem.is_head,
-          view: problem.view
+          view: problem.view,
+          category: problem.problem_category ? problem.problem_category.name : '-'
         }))
         total.value = problems.total
         page.value = problems.page
