@@ -45,6 +45,13 @@
                 />
               </v-col>
               <v-col cols="12">
+                <FileInputWithValidate
+                  v-model="file"
+                  label="อัพโหลดไฟล์"
+                  name="อัพโหลดไฟล์"
+                />
+              </v-col>
+              <v-col cols="12">
                 <label>ในกรณีที่ตอบใช่</label>
                 <MultiSelectWithValidate
                   v-model="correct"
@@ -102,6 +109,7 @@ export default defineComponent({
     const correct = ref<any>(null)
     const wrong = ref<any>(null)
     const isSubmit = ref<boolean>(false)
+    const file = ref<any>(null)
 
     useFetch(async () => {
       try {
@@ -131,14 +139,18 @@ export default defineComponent({
         if (success) {
           try {
             isSubmit.value = true
-            await context.$axios.post('/problems', {
-              problem_category_id: category.value.id,
-              detail: detail.value,
-              title: name.value,
-              description: description.value,
-              child_true: correct.value ? [correct.value.id] : [],
-              child_false: wrong.value ? [wrong.value.id] : []
-            })
+            const formData = new FormData()
+            formData.append('problem_category_id', category.value.id)
+            formData.append('detail', detail.value)
+            formData.append('title', name.value)
+            formData.append('description', description.value)
+            if (correct.value) {
+              formData.append('child_true[]', correct.value.id as any)
+            }
+            if (file.value) {
+              formData.append('file', file.value)
+            }
+            await context.$axios.post('/problems', formData)
             context.store.commit('alert/show', { type: 'success', message: 'ทำรายการสำเร็จ.' })
             isSubmit.value = true
             router.push('/problem')
@@ -155,6 +167,7 @@ export default defineComponent({
       description,
       detail,
       category,
+      file,
       categoryLists,
       questionLists,
       correct,

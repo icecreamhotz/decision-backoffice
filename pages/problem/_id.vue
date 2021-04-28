@@ -45,6 +45,12 @@
                 />
               </v-col>
               <v-col cols="12">
+                <FileInputWithValidate
+                  v-model="file"
+                  :placeholder="fileName"
+                />
+              </v-col>
+              <v-col cols="12">
                 <label>ในกรณีที่ตอบใช่</label>
                 <MultiSelectWithValidate
                   v-model="correct"
@@ -102,6 +108,8 @@ export default defineComponent({
     const questionLists = ref<any>([])
     const correct = ref<any>(null)
     const wrong = ref<any>(null)
+    const file = ref<any>(null)
+    const fileName = ref<string>('')
     const isSubmit = ref<boolean>(false)
 
     useFetch(async () => {
@@ -132,6 +140,7 @@ export default defineComponent({
         const falseValue = problem.data.data.childs.find((v: any) => v.is_false)
         correct.value = trueValue ? questionLists.value.find((v:any) => v.id === trueValue.child_problem_id) : null
         wrong.value = falseValue ? questionLists.value.find((v:any) => v.id === falseValue.child_problem_id) : null
+        fileName.value = problem.data.data.filename
       } catch (err) {
         isSubmit.value = false
         context.store.commit('alert/show', { type: 'error', message: err })
@@ -143,14 +152,18 @@ export default defineComponent({
         if (success) {
           try {
             isSubmit.value = true
-            await context.$axios.put(`/problems/${route.value.params.id}`, {
-              title: name.value,
-              description: description.value,
-              detail: detail.value,
-              problem_category_id: category.value.id,
-              child_true: correct.value ? [correct.value.id] : [],
-              child_false: wrong.value ? [wrong.value.id] : []
-            })
+            const formData = new FormData()
+            formData.append('problem_category_id', category.value.id)
+            formData.append('detail', detail.value)
+            formData.append('title', name.value)
+            formData.append('description', description.value)
+            if (correct.value) {
+              formData.append('child_true[]', correct.value.id as any)
+            }
+            if (file.value) {
+              formData.append('file', file.value)
+            }
+            await context.$axios.put(`/problems/${route.value.params.id}`, formData)
             context.store.commit('alert/show', { type: 'success', message: 'ทำรายการสำเร็จ.' })
             isSubmit.value = true
             router.push('/problem')
@@ -168,6 +181,8 @@ export default defineComponent({
       detail,
       category,
       categoryLists,
+      file,
+      fileName,
       questionLists,
       correct,
       wrong,
