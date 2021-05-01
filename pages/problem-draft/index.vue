@@ -37,7 +37,10 @@ export default defineComponent({
     const context = useContext()
     const headers = ref([
       {
-        text: 'หัวข้อปัญหา', value: 'name', sortable: false, width: '500px', align: 'left'
+        text: 'หัวข้อปัญหา', value: 'name', sortable: false, width: '400px', align: 'left'
+      },
+      {
+        text: 'วันที่เพิ่มข้อมูล', value: 'created_at', sortable: false, width: '100px', align: 'left'
       },
       {
         text: 'จัดการ', value: 'delete', sortable: false, width: '20px', align: 'left'
@@ -75,7 +78,8 @@ export default defineComponent({
         const problems = problemRequest.data.data
         data.value = problems.data.map((problem: any) => ({
           id: problem.id,
-          name: problem.title
+          name: problem.title,
+          created_at: context.app.$dayjs(problem.created_at).add(543, 'years').format('DD/MM/YYYY')
         }))
         total.value = problems.total
         page.value = problems.page

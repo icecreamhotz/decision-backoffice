@@ -51,7 +51,7 @@
                   name="อัพโหลดไฟล์"
                 />
               </v-col>
-              <v-col cols="12">
+              <v-col cols="12" md="6">
                 <label>ในกรณีที่ตอบใช่</label>
                 <MultiSelectWithValidate
                   v-model="correct"
@@ -64,7 +64,7 @@
                   track-by="id"
                 />
               </v-col>
-              <!-- <v-col cols="12" md="6">
+              <v-col cols="12" md="6">
                 <label>ในกรณีที่ตอบไม่ใช่</label>
                 <MultiSelectWithValidate
                   v-model="wrong"
@@ -76,7 +76,7 @@
                   label="name"
                   track-by="id"
                 />
-              </v-col> -->
+              </v-col>
             </v-row>
           </template>
           <template slot="submit">
@@ -146,6 +146,9 @@ export default defineComponent({
             formData.append('description', description.value)
             if (correct.value) {
               formData.append('child_true[]', correct.value.id as any)
+            }
+            if (wrong.value) {
+              formData.append('child_false[]', wrong.value.id as any)
             }
             if (file.value) {
               formData.append('file', file.value)
