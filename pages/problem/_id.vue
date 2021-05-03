@@ -33,7 +33,6 @@
                   v-model="detail"
                   name="รายละเอียด"
                   label="รายละเอียด"
-                  rules="required"
                 />
               </v-col>
               <v-col cols="12">
@@ -154,7 +153,7 @@ export default defineComponent({
             isSubmit.value = true
             const formData = new FormData()
             formData.append('problem_category_id', category.value.id)
-            formData.append('detail', detail.value)
+            formData.append('detail', detail.value || '')
             formData.append('title', name.value)
             formData.append('description', description.value)
             if (correct.value) {
