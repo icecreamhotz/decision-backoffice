@@ -12,6 +12,10 @@
   },
   "dependencies": {
     "@babel/preset-env": "7.12.17",
+    "@fullcalendar/core": "4.4.2",
+    "@fullcalendar/daygrid": "4.4.2",
+    "@fullcalendar/interaction": "4.4.2",
+    "@fullcalendar/vue": "4.4.2",
     "@nuxt/types": "2.14.12",
     "@nuxt/typescript-build": "2.0.4",
     "@nuxt/typescript-runtime": "2.0.1",
@@ -23,11 +27,12 @@
     "nuxt": "2.14.12",
     "nuxt-i18n": "6.16.0",
     "qs-stringify": "1.2.1",
+    "tippy.js": "6.3.1",
     "vee-validate": "3.4.5",
     "vue-croppie": "2.0.2",
+    "vue-multiselect": "2.1.6",
     "vue2-google-maps": "0.10.7",
-    "vue2-timepicker": "1.1.6",
-    "vue-multiselect": "2.1.6"
+    "vue2-timepicker": "1.1.6"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "5.0.0",

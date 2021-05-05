@@ -35,6 +35,8 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    '~/node_modules/@fullcalendar/core/main.css',
+    '~/node_modules/@fullcalendar/daygrid/main.css',
     '~/assets/scss/main.scss'
   ],
 
@@ -46,7 +48,8 @@ export default {
     '~/plugins/vue-google-map',
     '~/plugins/vue-timepicker',
     '~/plugins/vue-croppie',
-    '~/plugins/vue-multiselect'
+    '~/plugins/vue-multiselect',
+    { src: '~/plugins/full-calendar', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
