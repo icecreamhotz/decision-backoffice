@@ -124,9 +124,7 @@ export default defineComponent({
     const logoutConfirm = ref<boolean>(false)
     const menus = ref([])
     const hideSidebar = computed(() => {
-      return [
-        'login___th'
-      ].includes(route.value.name as string)
+      return route.value.name === 'login___th'
     })
 
     const fetchInititalValue = async () => {
