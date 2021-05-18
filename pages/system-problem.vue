@@ -1,7 +1,7 @@
 <template>
   <div>
     <CardContainer>
-      <CardContent title="สถิติความพึงพอใจระบบ">
+      <CardContent title="สถิติวิธีการแก้ไขปัญหา">
         <template slot="content">
           <v-row>
             <v-col cols="4">

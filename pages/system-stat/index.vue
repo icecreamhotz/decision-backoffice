@@ -1,7 +1,7 @@
 <template>
   <div>
     <CardContainer>
-      <CardContent title="สถิติวิธีการแก้ไขปัญหา">
+      <CardContent title="สถิติความถึงพอใจระบบ">
         <template slot="content">
           <div class="system-stat__container mx-auto">
             <PieChart v-if="isHidden" :data="chartData" :options="chartOptions" />
