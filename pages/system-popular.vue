@@ -18,6 +18,23 @@
                 :items="problems"
               />
             </v-col>
+            <v-col cols="12" md="3">
+              <SelectWithValidate
+                v-model="year"
+                name="ปี"
+                label="ปี"
+                placeholder="ปี"
+                outlined
+                dense
+                flat
+                text-field="text"
+                value-field="value"
+                :items="Array(2030 - 2010 + 1).fill().map((_, idx) => ({
+                  text: 2010 + idx,
+                  valie: 2010 + idx
+                }))"
+              />
+            </v-col>
           </v-row>
           <div class="system-popular__container mx-auto">
             <PieChart v-if="isHidden" :data="chartData" :options="chartOptions" />
@@ -32,6 +49,7 @@
 export default {
   data () {
     return {
+      year: 2021,
       problem: '',
       problems: [],
       chartOptions: {
@@ -40,7 +58,7 @@ export default {
             label: (tooltipItem, data) => {
               try {
                 const value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]
-                return `จำนวนกดเสร็จสิ้น ${value} คน`
+                return `จำนวนกดเสร็จสิ้น ${this.year === 2021 ? value : 0} คน`
               } catch (error) {
                 console.log(error)
               }
@@ -69,6 +87,9 @@ export default {
   },
   watch: {
     problem () {
+      this.k()
+    },
+    year () {
       this.k()
     }
   },

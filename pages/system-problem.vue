@@ -18,6 +18,23 @@
                 :items="problems"
               />
             </v-col>
+            <v-col cols="12" md="3">
+              <SelectWithValidate
+                v-model="year"
+                name="ปี"
+                label="ปี"
+                placeholder="ปี"
+                outlined
+                dense
+                flat
+                text-field="text"
+                value-field="value"
+                :items="Array(2030 - 2010 + 1).fill().map((_, idx) => ({
+                  text: 2010 + idx,
+                  valie: 2010 + idx
+                }))"
+              />
+            </v-col>
           </v-row>
           <div class="system-problem__container mx-auto">
             <PieChart v-if="isHidden" :data="chartData" :options="chartOptions" />
@@ -32,6 +49,7 @@
 export default {
   data () {
     return {
+      year: 2021,
       problem: '',
       problems: [],
       chartOptions: {
@@ -77,6 +95,9 @@ export default {
   watch: {
     problem () {
       this.k()
+    },
+    year () {
+      this.k()
     }
   },
   async mounted () {
@@ -99,7 +120,7 @@ export default {
     async k () {
       this.isHidden = false
       try {
-        const dd = await this.$axios.get(`/problems?page=1&perPage=99999&problem_category_id=${this.problem}`)
+        const dd = await this.$axios.get(`/problems?page=1&perPage=99999&problem_category_id=${this.problem}&year=${this.year}`)
         const data = dd.data.data.data
         this.chartData.labels = data.map(d => d.title)
         this.chartData.datasets[0].data = data.map(d => d.id)

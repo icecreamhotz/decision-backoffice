@@ -1,3 +1,3 @@
 <template>
-  <div>Helloo test</div>
+  <div />
 </template>
